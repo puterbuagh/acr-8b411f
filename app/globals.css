@@ -1,0 +1,175 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Editorial / refined poker aesthetic — deep felt green + bone + gold accent */
+    --background: oklch(0.16 0.015 150);
+    --foreground: oklch(0.96 0.01 90);
+
+    --card: oklch(0.20 0.018 150);
+    --card-foreground: oklch(0.96 0.01 90);
+
+    --popover: oklch(0.20 0.018 150);
+    --popover-foreground: oklch(0.96 0.01 90);
+
+    /* Felt green primary */
+    --primary: oklch(0.62 0.14 145);
+    --primary-foreground: oklch(0.12 0.01 150);
+
+    --secondary: oklch(0.24 0.02 150);
+    --secondary-foreground: oklch(0.96 0.01 90);
+
+    --muted: oklch(0.24 0.015 150);
+    --muted-foreground: oklch(0.65 0.02 100);
+
+    /* Gold accent — luxury poker chip */
+    --accent: oklch(0.78 0.13 80);
+    --accent-foreground: oklch(0.16 0.015 150);
+
+    --destructive: oklch(0.58 0.20 25);
+    --destructive-foreground: oklch(0.98 0.005 0);
+
+    --success: oklch(0.70 0.16 145);
+    --success-foreground: oklch(0.12 0.01 150);
+
+    --warning: oklch(0.78 0.15 75);
+    --warning-foreground: oklch(0.16 0.015 150);
+
+    --border: oklch(0.28 0.018 150);
+    --input: oklch(0.24 0.015 150);
+    --ring: oklch(0.62 0.14 145);
+
+    --radius: 0.5rem;
+
+    --font-display: "Fraunces", "Times New Roman", serif;
+    --font-body: "Inter", system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", "Courier New", monospace;
+  }
+
+  .dark {
+    /* Same tokens — this app is dark by default */
+    --background: oklch(0.16 0.015 150);
+    --foreground: oklch(0.96 0.01 90);
+    --card: oklch(0.20 0.018 150);
+    --card-foreground: oklch(0.96 0.01 90);
+    --popover: oklch(0.20 0.018 150);
+    --popover-foreground: oklch(0.96 0.01 90);
+    --primary: oklch(0.62 0.14 145);
+    --primary-foreground: oklch(0.12 0.01 150);
+    --secondary: oklch(0.24 0.02 150);
+    --secondary-foreground: oklch(0.96 0.01 90);
+    --muted: oklch(0.24 0.015 150);
+    --muted-foreground: oklch(0.65 0.02 100);
+    --accent: oklch(0.78 0.13 80);
+    --accent-foreground: oklch(0.16 0.015 150);
+    --destructive: oklch(0.58 0.20 25);
+    --destructive-foreground: oklch(0.98 0.005 0);
+    --border: oklch(0.28 0.018 150);
+    --input: oklch(0.24 0.015 150);
+    --ring: oklch(0.62 0.14 145);
+  }
+
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  html, body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+
+  body {
+    font-family: var(--font-body);
+    font-feature-settings: "ss01", "cv11";
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+    font-optical-sizing: auto;
+  }
+  .font-body {
+    font-family: var(--font-body);
+  }
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+
+  .bg-background { background-color: hsl(var(--background)); }
+  .bg-foreground { background-color: hsl(var(--foreground)); }
+  .bg-card { background-color: hsl(var(--card)); }
+  .bg-popover { background-color: hsl(var(--popover)); }
+  .bg-primary { background-color: hsl(var(--primary)); }
+  .bg-primary\/10 { background-color: hsl(var(--primary) / 0.1); }
+  .bg-primary\/20 { background-color: hsl(var(--primary) / 0.2); }
+  .bg-primary\/30 { background-color: hsl(var(--primary) / 0.3); }
+  .bg-primary\/5 { background-color: hsl(var(--primary) / 0.05); }
+  .bg-secondary { background-color: hsl(var(--secondary)); }
+  .bg-muted { background-color: hsl(var(--muted)); }
+  .bg-muted\/30 { background-color: hsl(var(--muted) / 0.3); }
+  .bg-muted\/50 { background-color: hsl(var(--muted) / 0.5); }
+  .bg-accent { background-color: hsl(var(--accent)); }
+  .bg-accent\/10 { background-color: hsl(var(--accent) / 0.1); }
+  .bg-accent\/20 { background-color: hsl(var(--accent) / 0.2); }
+  .bg-destructive { background-color: hsl(var(--destructive)); }
+  .bg-destructive\/10 { background-color: hsl(var(--destructive) / 0.1); }
+  .bg-success { background-color: hsl(var(--success)); }
+  .bg-warning { background-color: hsl(var(--warning)); }
+
+  .text-background { color: hsl(var(--background)); }
+  .text-foreground { color: hsl(var(--foreground)); }
+  .text-card-foreground { color: hsl(var(--card-foreground)); }
+  .text-primary { color: hsl(var(--primary)); }
+  .text-primary-foreground { color: hsl(var(--primary-foreground)); }
+  .text-secondary-foreground { color: hsl(var(--secondary-foreground)); }
+  .text-muted-foreground { color: hsl(var(--muted-foreground)); }
+  .text-accent { color: hsl(var(--accent)); }
+  .text-accent-foreground { color: hsl(var(--accent-foreground)); }
+  .text-destructive { color: hsl(var(--destructive)); }
+  .text-success { color: hsl(var(--success)); }
+  .text-warning { color: hsl(var(--warning)); }
+
+  .border-border { border-color: hsl(var(--border)); }
+  .border-primary { border-color: hsl(var(--primary)); }
+  .border-accent { border-color: hsl(var(--accent)); }
+  .border-destructive { border-color: hsl(var(--destructive)); }
+
+  .ring-primary { --tw-ring-color: hsl(var(--primary)); }
+  .ring-accent { --tw-ring-color: hsl(var(--accent)); }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
+}
+
+/* Staggered page-load animation */
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-rise {
+  animation: rise-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 hsl(var(--primary) / 0.4); }
+  50% { box-shadow: 0 0 0 8px hsl(var(--primary) / 0); }
+}
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
