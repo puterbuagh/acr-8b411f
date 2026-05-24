@@ -3,12 +3,25 @@ import LoginForm from "@/components/auth/LoginForm";
 import OAuthButtons from "@/components/auth/OAuthButtons";
 import AuthDivider from "@/components/auth/AuthDivider";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
 
 export const metadata = {
   title: "Sign in · PokerVision",
 };
 
-export default function LoginPage() {
+export const dynamic = "force-dynamic";
+
+async function LoginPage() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (user) {
+    redirect("/");
+  }
+
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4 relative overflow-hidden">
       <div className="absolute inset-0 -z-10 opacity-40">
@@ -35,3 +48,5 @@ export default function LoginPage() {
     </div>
   );
 }
+
+export default LoginPage;
