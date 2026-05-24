@@ -34,18 +34,24 @@ function LoginForm() {
     setSubmitting(true);
     try {
       const supabase = createClient();
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password: password,
       });
       if (error) {
-        toast.error(error.message);
+        console.error("Supabase auth error:", error);
+        toast.error(error.message || "Failed to sign in");
+        return;
+      }
+      if (!data?.session) {
+        toast.error("No session returned from sign in");
         return;
       }
       toast.success("Welcome back");
       router.push(redirectTo);
       router.refresh();
     } catch (err) {
+      console.error("Sign in exception:", err);
       const message =
         err instanceof Error ? err.message : "Something went wrong";
       toast.error(message);
