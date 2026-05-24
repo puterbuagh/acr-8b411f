@@ -6,8 +6,10 @@ export function createClient() {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       db: {
-        schema: process.env.NEXT_PUBLIC_SUPABASE_SCHEMA || 'public',
+        schema: 'acr',
       },
     }
   )
 }
+
+export default createClient
