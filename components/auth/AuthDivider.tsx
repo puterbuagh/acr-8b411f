@@ -1,14 +1,13 @@
-function AuthDivider({ label = "or continue with email" }: { label?: string }) {
+interface AuthDividerProps {
+  label?: string;
+}
+
+function AuthDivider({ label = "or continue with email" }: AuthDividerProps) {
   return (
-    <div className="relative my-6">
-      <div className="absolute inset-0 flex items-center">
-        <span className="w-full border-t border-border" />
-      </div>
-      <div className="relative flex justify-center">
-        <span className="bg-card px-3 text-xs uppercase tracking-wider text-muted-foreground">
-          {label}
-        </span>
-      </div>
+    <div className="relative my-6 flex items-center">
+      <div className="flex-1 border-t border-border" />
+      <span className="px-4 text-xs uppercase tracking-wider text-muted-foreground">{label}</span>
+      <div className="flex-1 border-t border-border" />
     </div>
   );
 }
