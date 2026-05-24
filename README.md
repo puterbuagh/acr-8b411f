@@ -44,9 +44,19 @@ Required variables:
 - `SUPABASE_SCHEMA` — Isolated schema name for this project (e.g. `pokervision`)
 - `NEXT_PUBLIC_SUPABASE_SCHEMA` — Mirror of `SUPABASE_SCHEMA` for browser clients
 
-### 3. Run migrations
+### 3. Run migrations (MANUAL SETUP REQUIRED)
 
-Apply the SQL migration in `supabase/migrations/001_hands_table.sql` against your Supabase project. The migration creates the `hands` table inside your isolated schema with appropriate RLS policies.
+**Important:** Due to Supabase Management API access restrictions, migrations cannot be applied automatically via CLI. You must run the migration manually:
+
+1. Open your Supabase project dashboard
+2. Navigate to **SQL Editor** → **New Query**
+3. Copy the entire contents of `supabase/migrations/001_hands_table.sql`
+4. Paste into the SQL Editor
+5. Click **Run** to execute the migration
+
+This creates the `hands` table inside your isolated schema with appropriate RLS policies. The manual approach bypasses the Management API 403 error that occurs when the CLI attempts to deploy migrations without Administrator/Owner privileges.
+
+**Why manual?** The Supabase CLI requires an access token with `Owner` or `Administrator` role to modify database infrastructure via the Management API. If your token has `Developer` or `Read-Only` privileges, migrations will fail with a 403 error. Running the SQL directly in the dashboard sidesteps this restriction entirely.
 
 ### 4. Enable Google OAuth (optional but recommended)
 
