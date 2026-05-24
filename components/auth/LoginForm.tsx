@@ -58,11 +58,11 @@ function LoginForm() {
     email.length > 0 && password.length > 0 && Object.keys(errors).length === 0;
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-      <div className="space-y-1.5">
+    <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+      <div className="space-y-2">
         <label
           htmlFor="email"
-          className="text-sm font-medium text-foreground"
+          className="text-sm font-medium text-slate-200 tracking-wide"
         >
           Email
         </label>
@@ -74,31 +74,31 @@ function LoginForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           onBlur={validate}
-          className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:border-primary transition"
+          className="w-full rounded-lg border border-slate-700/60 bg-slate-950/50 px-4 py-2.5 text-sm text-white placeholder:text-slate-500 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/50 hover:border-slate-600/80"
           placeholder="you@example.com"
           aria-invalid={!!errors.email}
           aria-describedby={errors.email ? "email-error" : undefined}
         />
         {errors.email ? (
-          <p id="email-error" className="text-xs text-red-500">
+          <p id="email-error" className="text-xs text-red-400 mt-1.5">
             {errors.email}
           </p>
         ) : null}
       </div>
 
-      <div className="space-y-1.5">
+      <div className="space-y-2">
         <div className="flex items-center justify-between">
           <label
             htmlFor="password"
-            className="text-sm font-medium text-foreground"
+            className="text-sm font-medium text-slate-200 tracking-wide"
           >
             Password
           </label>
           <Link
             href="/forgot-password"
-            className="text-xs text-muted-foreground hover:text-foreground underline-offset-4 hover:underline"
+            className="text-xs text-slate-400 hover:text-emerald-400 transition-colors duration-200 underline-offset-4 hover:underline"
           >
-            Forgot?
+            Forgot password?
           </Link>
         </div>
         <input
@@ -109,13 +109,13 @@ function LoginForm() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           onBlur={validate}
-          className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:border-primary transition"
+          className="w-full rounded-lg border border-slate-700/60 bg-slate-950/50 px-4 py-2.5 text-sm text-white placeholder:text-slate-500 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/50 hover:border-slate-600/80"
           placeholder="••••••••"
           aria-invalid={!!errors.password}
           aria-describedby={errors.password ? "password-error" : undefined}
         />
         {errors.password ? (
-          <p id="password-error" className="text-xs text-red-500">
+          <p id="password-error" className="text-xs text-red-400 mt-1.5">
             {errors.password}
           </p>
         ) : null}
@@ -124,7 +124,7 @@ function LoginForm() {
       <button
         type="submit"
         disabled={submitting || !isValid}
-        className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground shadow-lg shadow-primary/20 transition hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-emerald-600 to-emerald-500 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/30 transition-all duration-200 hover:shadow-xl hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
       >
         {submitting ? (
           <>
