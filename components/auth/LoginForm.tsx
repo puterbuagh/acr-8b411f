@@ -1,146 +1,94 @@
 "use client";
 
-import { useState, FormEvent } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 import Link from "next/link";
-import { Loader2 } from "lucide-react";
-import { toast } from "sonner";
-import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
+import { Loader2, Mail, Lock } from "lucide-react";
 
 function LoginForm() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const redirectTo = searchParams.get("redirectTo") || "/";
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>(
-    {}
-  );
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  function validate() {
-    const next: { email?: string; password?: string } = {};
-    if (!email) next.email = "Email is required";
-    else if (!/^\S+@\S+\.\S+$/.test(email)) next.email = "Enter a valid email";
-    if (!password) next.password = "Password is required";
-    setErrors(next);
-    return Object.keys(next).length === 0;
-  }
-
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!validate()) return;
-    setSubmitting(true);
-    try {
-      const supabase = createClient();
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
-        password: password,
-      });
-      if (error) {
-        console.error("Supabase auth error:", error);
-        toast.error(error.message || "Failed to sign in");
-        return;
-      }
-      if (!data?.session) {
-        toast.error("No session returned from sign in");
-        return;
-      }
-      toast.success("Welcome back");
-      router.push(redirectTo);
-      router.refresh();
-    } catch (err) {
-      console.error("Sign in exception:", err);
-      const message =
-        err instanceof Error ? err.message : "Something went wrong";
-      toast.error(message);
-    } finally {
-      setSubmitting(false);
-    }
+    setLoading(true);
+    setError(null);
+    // Auth disabled for local editing — bypass and route straight to the app.
+    setTimeout(() => {
+      router.push("/");
+    }, 300);
   }
-
-  const isValid =
-    email.length > 0 && password.length > 0 && Object.keys(errors).length === 0;
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+    <form onSubmit={handleSubmit} className="space-y-5">
       <div className="space-y-2">
-        <label
-          htmlFor="email"
-          className="text-sm font-medium text-slate-200 tracking-wide"
-        >
+        <label htmlFor="email" className="text-sm font-medium text-foreground">
           Email
         </label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          autoComplete="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          onBlur={validate}
-          className="w-full rounded-lg border border-slate-700/60 bg-slate-950/50 px-4 py-2.5 text-sm text-white placeholder:text-slate-500 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/50 hover:border-slate-600/80"
-          placeholder="you@example.com"
-          aria-invalid={!!errors.email}
-          aria-describedby={errors.email ? "email-error" : undefined}
-        />
-        {errors.email ? (
-          <p id="email-error" className="text-xs text-red-400 mt-1.5">
-            {errors.email}
-          </p>
-        ) : null}
+        <div className="relative">
+          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+          <input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@example.com"
+            className="w-full rounded-lg border border-border bg-background pl-10 pr-3 py-2.5 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition"
+          />
+        </div>
       </div>
 
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <label
-            htmlFor="password"
-            className="text-sm font-medium text-slate-200 tracking-wide"
-          >
+          <label htmlFor="password" className="text-sm font-medium text-foreground">
             Password
           </label>
           <Link
             href="/forgot-password"
-            className="text-xs text-slate-400 hover:text-emerald-400 transition-colors duration-200 underline-offset-4 hover:underline"
+            className="text-xs text-muted-foreground hover:text-primary transition-colors"
           >
             Forgot password?
           </Link>
         </div>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          autoComplete="current-password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          onBlur={validate}
-          className="w-full rounded-lg border border-slate-700/60 bg-slate-950/50 px-4 py-2.5 text-sm text-white placeholder:text-slate-500 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/50 hover:border-slate-600/80"
-          placeholder="••••••••"
-          aria-invalid={!!errors.password}
-          aria-describedby={errors.password ? "password-error" : undefined}
-        />
-        {errors.password ? (
-          <p id="password-error" className="text-xs text-red-400 mt-1.5">
-            {errors.password}
-          </p>
-        ) : null}
+        <div className="relative">
+          <Lock className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+          <input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="••••••••"
+            className="w-full rounded-lg border border-border bg-background pl-10 pr-3 py-2.5 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition"
+          />
+        </div>
       </div>
+
+      {error && (
+        <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+          {error}
+        </div>
+      )}
 
       <button
         type="submit"
-        disabled={submitting || !isValid}
-        className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-emerald-600 to-emerald-500 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/30 transition-all duration-200 hover:shadow-xl hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+        disabled={loading}
+        className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 disabled:opacity-60 disabled:cursor-not-allowed transition-all"
       >
-        {submitting ? (
+        {loading ? (
           <>
-            <Loader2 className="h-4 w-4 animate-spin" />
-            Signing in…
+            <Loader2 className="size-4 animate-spin" /> Signing in…
           </>
         ) : (
-          "Sign in"
+          "Enter the table"
         )}
       </button>
+
+      <p className="text-center text-xs text-muted-foreground">
+        Auth is disabled for local editing — any credentials route you straight into the app.
+      </p>
     </form>
   );
 }
