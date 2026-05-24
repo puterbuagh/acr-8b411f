@@ -1,24 +1,40 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { History, TrendingUp, TrendingDown, Activity } from "lucide-react";
-import { createClient } from "@/lib/supabase/server";
 
-export default async function HistoryPage() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+interface HistoryEntry {
+  id: string;
+  timestamp: Date;
+  hand: string;
+  action: string;
+  recommendation: string;
+  evDelta: number;
+}
 
-  let hands: any[] = [];
-  
-  if (user) {
-    const { data } = await supabase
-      .from("acr.hands")
-      .select("*")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false })
-      .limit(20);
-    
-    hands = data || [];
+function loadHistory(): HistoryEntry[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const stored = localStorage.getItem("pokervision_history");
+    if (!stored) return [];
+    const parsed = JSON.parse(stored);
+    return parsed.map((entry: any) => ({
+      ...entry,
+      timestamp: new Date(entry.timestamp),
+    }));
+  } catch {
+    return [];
   }
+}
 
-  const totalEV = hands.reduce((sum, h) => sum + (h.ev_delta || 0), 0);
+export default function HistoryPage() {
+  const [hands, setHands] = useState<HistoryEntry[]>([]);
+
+  useEffect(() => {
+    setHands(loadHistory());
+  }, []);
+
+  const totalEV = hands.reduce((sum, h) => sum + (h.evDelta || 0), 0);
   const correctDecisions = hands.filter((h) => h.recommendation === h.action).length;
   const accuracy = hands.length > 0 ? Math.round((correctDecisions / hands.length) * 100) : 0;
 
@@ -85,26 +101,25 @@ export default async function HistoryPage() {
               <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground">
                 <tr>
                   <th className="text-left px-6 py-3 font-medium">Time</th>
-                  <th className="text-left px-6 py-3 font-medium">Game</th>
                   <th className="text-left px-6 py-3 font-medium">Hero</th>
                   <th className="text-left px-6 py-3 font-medium">GTO</th>
                   <th className="text-left px-6 py-3 font-medium">Your Action</th>
-                  <th className="text-left px-6 py-3 font-medium">Result</th>
                   <th className="text-right px-6 py-3 font-medium">EV Δ</th>
                 </tr>
               </thead>
               <tbody>
                 {hands.map((h, idx) => {
                   const matched = h.recommendation === h.action;
-                  const timeAgo = new Date(h.created_at).toLocaleString();
+                  const timeAgo = h.timestamp.toLocaleString();
                   return (
                     <tr
                       key={h.id}
-                      className={`border-t border-border ${idx % 2 === 1 ? "bg-muted/30" : ""}`}
+                      className={`border-t border-border ${
+                        idx % 2 === 1 ? "bg-muted/30" : ""
+                      }`}
                     >
                       <td className="px-6 py-4 text-muted-foreground">{timeAgo}</td>
-                      <td className="px-6 py-4 font-mono text-xs">{h.game_type || "NLHE"}</td>
-                      <td className="px-6 py-4 font-mono">{h.hero_cards || "--"}</td>
+                      <td className="px-6 py-4 font-mono">{h.hand || "--"}</td>
                       <td className="px-6 py-4">
                         <span className="rounded-full bg-primary/10 text-primary px-2 py-0.5 text-xs font-medium">
                           {h.recommendation || "--"}
@@ -121,26 +136,17 @@ export default async function HistoryPage() {
                           {h.action || "--"}
                         </span>
                       </td>
-                      <td className="px-6 py-4">
-                        <span
-                          className={`text-xs font-medium ${
-                            h.result === "Won" ? "text-green-600" : "text-red-600"
-                          }`}
-                        >
-                          {h.result || "--"}
-                        </span>
-                      </td>
                       <td
                         className={`px-6 py-4 text-right font-mono tabular-nums ${
-                          (h.ev_delta || 0) > 0
+                          (h.evDelta || 0) > 0
                             ? "text-green-600"
-                            : (h.ev_delta || 0) < 0
+                            : (h.evDelta || 0) < 0
                             ? "text-red-600"
                             : "text-muted-foreground"
                         }`}
                       >
-                        {(h.ev_delta || 0) > 0 ? "+" : ""}
-                        {(h.ev_delta || 0).toFixed(2)}
+                        {(h.evDelta || 0) > 0 ? "+" : ""}
+                        {(h.evDelta || 0).toFixed(2)}
                       </td>
                     </tr>
                   );
