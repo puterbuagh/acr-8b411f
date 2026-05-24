@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { readScreen } from "@/lib/ocr/screen-reader";
 import { parseGameState } from "@/lib/ocr/game-parser";
 import solve from "@/lib/gto/solver";
+import { createClient } from "@/lib/supabase/client";
 import type { GameState, GTODecision, OcrRegion } from "@/lib/types/game-state";
 
 export interface HistoryEntry {
@@ -49,6 +50,7 @@ export function useGameState({
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const processingRef = useRef<boolean>(false);
+  const supabase = createClient();
 
   const tick = useCallback(async () => {
     if (processingRef.current) return;
@@ -81,6 +83,22 @@ export function useGameState({
             evDelta: decision.ev[decision.action] ?? 0,
           };
           setHistory((prev) => [newEntry, ...prev.slice(0, 19)]);
+
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user) {
+            await supabase.from("acr.hands").insert({
+              user_id: user.id,
+              hero_cards: heroCards,
+              board_cards: parsed.board?.map((c) => `${c.rank}${c.suit}`).join("") || null,
+              pot_size: parsed.pot,
+              action: decision.action.toUpperCase(),
+              recommendation: decision.action.toUpperCase(),
+              ev_delta: decision.ev[decision.action] ?? 0,
+              game_type: "NLHE",
+              result: null,
+              game_state: parsed,
+            });
+          }
         }
       }
 
@@ -91,7 +109,7 @@ export function useGameState({
       processingRef.current = false;
       setIsProcessing(false);
     }
-  }, []);
+  }, [supabase]);
 
   useEffect(() => {
     if (!isActive || !stream) {
