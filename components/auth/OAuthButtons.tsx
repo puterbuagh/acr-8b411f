@@ -63,14 +63,14 @@ function OAuthButtons() {
       type="button"
       onClick={handleGoogle}
       disabled={loading}
-      className="inline-flex w-full items-center justify-center gap-3 rounded-md border border-border bg-background px-4 py-2.5 text-sm font-medium text-foreground transition hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50"
+      className="inline-flex w-full items-center justify-center gap-3 rounded-lg border border-slate-700/60 bg-slate-950/50 px-4 py-3 text-sm font-medium text-white shadow-md shadow-black/20 transition-all duration-200 hover:bg-slate-900/60 hover:border-slate-600/80 hover:shadow-lg hover:scale-[1.01] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
     >
       {loading ? (
-        <Loader2 className="h-4 w-4 animate-spin" />
+        <Loader2 className="h-5 w-5 animate-spin" />
       ) : (
-        <GoogleIcon className="h-4 w-4" />
+        <GoogleIcon className="h-5 w-5" />
       )}
-      Continue with Google
+      <span>Continue with Google</span>
     </button>
   );
 }
