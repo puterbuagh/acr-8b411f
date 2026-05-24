@@ -9,7 +9,7 @@ export async function createClient() {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       db: {
-        schema: process.env.SUPABASE_SCHEMA || 'public',
+        schema: 'acr',
       },
       cookies: {
         get(name: string) {
@@ -33,3 +33,5 @@ export async function createClient() {
     }
   )
 }
+
+export default createClient
