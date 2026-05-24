@@ -1,51 +1,35 @@
-import AuthCard from "@/components/auth/AuthCard";
-import SignupForm from "@/components/auth/SignupForm";
-import OAuthButtons from "@/components/auth/OAuthButtons";
-import AuthDivider from "@/components/auth/AuthDivider";
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import AuthCard from "@/components/auth/AuthCard";
 
-export const metadata = {
-  title: "Create account · PokerVision",
-};
-
-export const dynamic = "force-dynamic";
-
-async function SignupPage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (user) {
-    redirect("/");
-  }
-
+function SignupPage() {
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-4 relative overflow-hidden">
-      <div className="absolute inset-0 -z-10 opacity-40">
-        <div className="absolute top-1/4 right-1/3 h-96 w-96 rounded-full bg-primary/20 blur-3xl" />
-        <div className="absolute bottom-1/4 left-1/3 h-96 w-96 rounded-full bg-accent/20 blur-3xl" />
+    <AuthCard
+      eyebrow="Get started"
+      title="Create your edge"
+      subtitle="Signups are disabled in this build — the app is open for editing."
+    >
+      <div className="space-y-4">
+        <Link
+          href="/"
+          className="group relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/30 transition hover:shadow-xl hover:shadow-primary/40"
+        >
+          <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+          <span className="relative">Enter dashboard →</span>
+        </Link>
+
+        <Link
+          href="/login"
+          className="flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-card px-6 py-3.5 text-sm font-medium text-foreground transition hover:border-primary/50 hover:bg-accent"
+        >
+          Back to sign in
+        </Link>
       </div>
-      <AuthCard
-        title="Read the table"
-        subtitle="Create your account and start solving live."
-      >
-        <OAuthButtons mode="signup" />
-        <AuthDivider />
-        <SignupForm />
-        <p className="mt-6 text-center text-sm text-muted-foreground">
-          Already playing with us?{" "}
-          <Link
-            href="/login"
-            className="font-medium text-foreground underline-offset-4 hover:underline"
-          >
-            Sign in
-          </Link>
-        </p>
-      </AuthCard>
-    </div>
+
+      <div className="mt-8 rounded-lg border border-border/50 bg-muted/30 p-4 text-xs leading-relaxed text-muted-foreground">
+        <p className="font-semibold text-foreground mb-1">Dev mode active</p>
+        <p>No account needed. Open the dashboard and start playing with the GTO engine.</p>
+      </div>
+    </AuthCard>
   );
 }
 
