@@ -29,7 +29,7 @@ export async function middleware(request: NextRequest) {
         },
       },
       db: {
-        schema: process.env.SUPABASE_SCHEMA || 'public',
+        schema: 'acr',
       },
     }
   )
