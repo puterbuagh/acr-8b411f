@@ -4,7 +4,6 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { readScreen } from "@/lib/ocr/screen-reader";
 import { parseGameState } from "@/lib/ocr/game-parser";
 import solve from "@/lib/gto/solver";
-import { createClient } from "@/lib/supabase/client";
 import type { GameState, GTODecision, OcrRegion } from "@/lib/types/game-state";
 
 export interface HistoryEntry {
@@ -37,6 +36,32 @@ const DEFAULT_REGIONS: OcrRegion[] = [
   { id: "action", label: "action", x: 0.35, y: 0.55, width: 0.3, height: 0.08 },
 ];
 
+const HISTORY_KEY = "pokervision_history";
+
+function loadHistory(): HistoryEntry[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const stored = localStorage.getItem(HISTORY_KEY);
+    if (!stored) return [];
+    const parsed = JSON.parse(stored);
+    return parsed.map((entry: any) => ({
+      ...entry,
+      timestamp: new Date(entry.timestamp),
+    }));
+  } catch {
+    return [];
+  }
+}
+
+function saveHistory(history: HistoryEntry[]) {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(0, 50)));
+  } catch {
+    // ignore
+  }
+}
+
 export function useGameState({
   stream,
   isActive,
@@ -45,12 +70,15 @@ export function useGameState({
   const [gtoDecision, setGtoDecision] = useState<GTODecision | null>(null);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [lastUpdate, setLastUpdate] = useState<number | null>(null);
-  const [history, setHistory] = useState<HistoryEntry[]>([]);
+  const [history, setHistory] = useState<HistoryEntry[]>(() => loadHistory());
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const processingRef = useRef<boolean>(false);
-  const supabase = createClient();
+
+  useEffect(() => {
+    saveHistory(history);
+  }, [history]);
 
   const tick = useCallback(async () => {
     if (processingRef.current) return;
@@ -82,23 +110,7 @@ export function useGameState({
             recommendation: decision.action.toUpperCase(),
             evDelta: decision.ev[decision.action] ?? 0,
           };
-          setHistory((prev) => [newEntry, ...prev.slice(0, 19)]);
-
-          const { data: { user } } = await supabase.auth.getUser();
-          if (user) {
-            await supabase.from("acr.hands").insert({
-              user_id: user.id,
-              hero_cards: heroCards,
-              board_cards: parsed.board?.map((c) => `${c.rank}${c.suit}`).join("") || null,
-              pot_size: parsed.pot,
-              action: decision.action.toUpperCase(),
-              recommendation: decision.action.toUpperCase(),
-              ev_delta: decision.ev[decision.action] ?? 0,
-              game_type: "NLHE",
-              result: null,
-              game_state: parsed,
-            });
-          }
+          setHistory((prev) => [newEntry, ...prev.slice(0, 49)]);
         }
       }
 
@@ -109,7 +121,7 @@ export function useGameState({
       processingRef.current = false;
       setIsProcessing(false);
     }
-  }, [supabase]);
+  }, []);
 
   useEffect(() => {
     if (!isActive || !stream) {
