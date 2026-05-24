@@ -1,7 +1,7 @@
--- Set search path to the project-specific schema so unqualified table names resolve correctly
-SET search_path TO "${SUPABASE_SCHEMA}", public;
+-- Resolve tables against the project's isolated schema, falling back to public
+set search_path to "${SUPABASE_SCHEMA}", public;
 
--- Enable UUID extension if not already enabled (lives in extensions/public schema)
+-- Enable UUID extension if not already enabled
 create extension if not exists "pgcrypto";
 
 -- Hands table: stores every captured/played hand with parsed game state and GTO recommendation
