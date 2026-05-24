@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, History, Settings, Spade, LogOut, Circle } from "lucide-react";
+import { LayoutDashboard, History, Settings, Spade, Circle } from "lucide-react";
 
 const navItems = [
   { href: "/", label: "Live Table", icon: LayoutDashboard },
@@ -79,14 +79,6 @@ function Sidebar() {
             Reading screen at <span className="text-foreground font-mono">2 fps</span>. All inference runs locally in your browser.
           </div>
         </div>
-      </div>
-
-      {/* Footer */}
-      <div className="border-t border-border px-4 py-4">
-        <button className="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-muted-foreground hover:bg-muted/30 hover:text-foreground w-full transition-colors">
-          <LogOut className="h-4 w-4" />
-          Sign out
-        </button>
       </div>
     </aside>
   );
