@@ -18,7 +18,7 @@ export default function HomePage() {
   });
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-background to-secondary/10">
       <TopBar
         title="Live Table"
         isCapturing={capture.isCapturing}
@@ -26,31 +26,35 @@ export default function HomePage() {
         siteTemplate={siteTemplate}
       />
 
-      <div className="flex-1 flex items-center justify-center p-6 lg:p-10">
-        <div className="w-full max-w-7xl">
+      <div className="flex-1 flex items-start justify-center p-4 md:p-6 lg:p-8">
+        <div className="w-full max-w-[1600px]">
           {/* Display header */}
-          <div className="mb-12 text-center">
-            <div className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4 font-mono">
-              Session · Live
-            </div>
-            <h1 className="font-display text-5xl md:text-7xl font-light tracking-tight leading-none mb-6">
-              Read the table.
-              <br />
-              <span className="italic font-medium text-primary">Solve the spot.</span>
-            </h1>
-            <div className="flex items-center justify-center gap-2 text-xs font-mono text-muted-foreground">
-              <div className={`h-2 w-2 rounded-full ${capture.isCapturing ? "bg-primary animate-pulse" : "bg-muted-foreground/30"}`} />
-              {capture.isCapturing ? "CAPTURE ACTIVE" : "IDLE"}
+          <div className="mb-8 md:mb-12 text-center px-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-card border border-border mb-4">
+              <div className={`h-1.5 w-1.5 rounded-full ${capture.isCapturing ? "bg-emerald-500 animate-pulse" : "bg-muted-foreground/30"}`} />
+              <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground font-mono">
+                {capture.isCapturing ? "LIVE SESSION" : "READY"}
+              </span>
               {lastUpdate && capture.isCapturing && (
-                <span className="ml-2 opacity-60">· last frame {lastUpdate}ms</span>
+                <span className="text-xs text-muted-foreground/60">· {lastUpdate}ms</span>
               )}
             </div>
+            <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-light tracking-tight leading-[1.1] mb-4">
+              Read the table.
+              <br />
+              <span className="italic font-medium bg-gradient-to-r from-primary via-primary to-primary/60 bg-clip-text text-transparent">
+                Solve the spot.
+              </span>
+            </h1>
+            <p className="text-sm md:text-base text-muted-foreground max-w-xl mx-auto leading-relaxed">
+              Real-time GTO analysis from your screen. Capture, analyze, optimize — every decision backed by game theory.
+            </p>
           </div>
 
           {/* Main grid: irregular asymmetric layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6">
             {/* Left column — capture + history */}
-            <div className="lg:col-span-7 space-y-6">
+            <div className="lg:col-span-7 space-y-4 md:space-y-6">
               <ScreenCapture
                 stream={capture.stream}
                 isCapturing={capture.isCapturing}
@@ -62,7 +66,7 @@ export default function HomePage() {
             </div>
 
             {/* Right column — GTO recommendation + game state */}
-            <div className="lg:col-span-5 space-y-6">
+            <div className="lg:col-span-5 space-y-4 md:space-y-6">
               <GTORecommendation decision={gtoDecision} isProcessing={isProcessing} />
               <GameStatePanel state={gameState} />
             </div>
